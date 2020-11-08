@@ -1,0 +1,13 @@
+# Note that if you change media.mount, you'll need to update the udev rule and your piphoto config
+[Unit]
+Description=PiPhoto Trigger on Usb Mount
+Requires=media.mount
+After=media.mount
+
+[Service]
+ExecStart=/usr/local/bin/piphoto
+Type=oneshot
+ExecStartPost=/bin/bash -c 'echo "systemd-umount /media" | at now'
+
+[Install]
+WantedBy=media.mount

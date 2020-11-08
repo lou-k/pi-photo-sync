@@ -1,0 +1,74 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+if [ -e /etc/piphoto.conf ] ; then
+    source /etc/piphoto.conf
+else
+    >&2 echo "Could not read configuration file. Please update /etc/piphoto.conf"
+    exit 1
+fi
+
+if [ -z "${dest_host:-}" ]; then
+    >&2 echo "dest_host not set in config."
+    exit 1
+fi
+
+if [ -z "${dest_path:-}" ]; then
+    >&2 echo "dest_path not set in config."
+    exit 1
+fi
+
+if [ -z "${mount_point:-}" ]; then
+    >&2 echo "mount_point not set in config."
+    exit 1
+fi
+
+# Ssh into the remote host in master mode
+ssh -nNfM $dest_host
+
+# Iterate over the the images in the directory
+LAST_CREATED=""
+for file in $(find $mount_point)
+do
+    echo "Processing $file"
+
+    if [ ! -d "$file" ] ; then
+
+        # Extract the date it was taken
+        date=$(exiftool -T -createdate -d  "%Y-%m-%d" $file || true)
+        year=$(date --date="$date" "+%Y" || true)
+        remote_path="$dest_path/$year/$date/"
+
+        if [ -z "$date" ] || [ -z "$year" ] || [ "$date" == "-" ] ; then
+            >&2 echo "Could not infer date from file \"$file\""
+        else
+            # Create a remote directory if we think we need to
+            if [ "$LAST_CREATED" != "$remote_path" ]; then
+                echo "Creating remote path $remote_path"
+                ssh $dest_host "mkdir -p $remote_path"
+                LAST_CREATED="$remote_path"
+            fi
+
+            # Copy the file to the remote directory
+            copied=0
+            rsync -a -e ssh $file $dest_host:"$remote_path" || copied=$?
+            if [ $copied -ne 0 ] ; then
+                >&2 echo "Could not copy $file to $dest_host:$remote_path"
+            else
+                echo "Copied $file to $dest_host:$remote_path"
+                # remove the source file if asked.
+                if [ $remove_after_sync -eq 1 ] ; then rm -f "$file" ; fi
+            fi
+        
+        fi
+    fi
+done
+
+if [ $remove_after_sync -eq 1 ] ; then
+    sync
+fi
+
+# Terminate the ssh connection
+
+ssh -O exit $dest_host

@@ -1,0 +1,8 @@
+# Put this file in ~/.ssh/config on the pi
+# ensure the host below matches that in /etc/piphoto.conf
+Host upstream
+    User MyRemoteUser
+    HostName 192.xxx
+    Port 22
+    # Ensures that we only need to auth once.
+    ControlPath ~/.ssh/ctl-%h-%p-%r

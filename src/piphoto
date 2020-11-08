@@ -1,0 +1,48 @@
+#!/bin/bash
+set -uo pipefail
+IFS=$'\n\t'
+
+if [ -e /etc/piphoto.conf ] ; then
+    source /etc/piphoto.conf
+else
+    >&2 echo "Could not read configuration file. Please update /etc/piphoto.conf"
+    exit 1
+fi
+
+# led 0 - green, led 1 - red
+function indicate_error {
+    # Turn off the green led and flash the red indicating an error
+    echo 'none' | sudo tee /sys/class/leds/led0/trigger > /dev/null
+    echo 0 | sudo tee /sys/class/leds/led0/brightness > /dev/null
+    echo timer | sudo tee /sys/class/leds/led1/trigger > /dev/null
+    >&2 echo "Sync command exited with non-zero status!"
+}
+
+function indicate_success {
+    # Set the green led to solid to indicate success
+    echo 'default-on' | sudo tee /sys/class/leds/led0/trigger > /dev/null
+    echo "Sync completed successfully"
+}
+
+# Start blinking the green led
+echo timer | sudo tee /sys/class/leds/led0/trigger > /dev/null
+
+# Indicate error status if the script is interrupted
+function interrupted {
+    >&2 "piphoto interrupted, exiting..."
+    indicate_error
+    exit 1
+}
+trap interrupted SIGINT SIGTERM
+
+# Run the sync
+set +e
+su - $run_as_user -c piphoto-sync
+sync_status=$?
+set -e
+
+if [ $sync_status -eq 0 ] ; then
+    indicate_success
+else
+    indicate_error
+fi

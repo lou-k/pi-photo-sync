@@ -1,0 +1,7 @@
+#!/bin/bash
+set -uo pipefail
+IFS=$'\n\t'
+
+# Reset the leds to their defaults
+echo mmc0 > /sys/class/leds/led0/trigger
+echo input > /sys/class/leds/led1/trigger
