@@ -35,9 +35,14 @@ function interrupted {
 }
 trap interrupted SIGINT SIGTERM
 
+if [ -z "${run_as_user:-}" ]; then
+    >&2 echo "run_as_user not set in config."
+    exit 1
+fi
+
 # Run the sync
 set +e
-su - $run_as_user -c piphoto-sync
+su - "$run_as_user" -c piphoto-sync
 sync_status=$?
 set -e
 

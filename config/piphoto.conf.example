@@ -1,3 +1,4 @@
+#!/bin/bash
 # piphoto-sync example configuration file
 # Fill this out and put it in /etc/piphoto.conf
 
