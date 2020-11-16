@@ -1,5 +1,5 @@
 # pi-photo-sync
-This project turns your raspberry pi into a photo uploader for your SD cards. It's pretty hadny if your DSLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer.
+This project turns your raspberry pi into a photo uploader for your SD cards. It's pretty handy if your DSLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer.
 
 # Usage
 
