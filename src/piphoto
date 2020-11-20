@@ -40,9 +40,14 @@ if [ -z "${run_as_user:-}" ]; then
     exit 1
 fi
 
+if [ -z "${sync_command:-}" ]; then
+    >&2 echo "sync_command not set in config."
+    exit 1
+fi
+
 # Run the sync
 set +e
-su - "$run_as_user" -c piphoto-sync
+su - "$run_as_user" -c "$sync_command"
 sync_status=$?
 set -e
 

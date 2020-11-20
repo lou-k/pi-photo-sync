@@ -1,5 +1,5 @@
 # Put this file in ~/.ssh/config on the pi
-# ensure the host below matches that in /etc/piphoto.conf
+# ensure the host below matches that in /etc/piphoto.ssh.conf
 Host upstream
     User MyRemoteUser
     HostName 192.xxx

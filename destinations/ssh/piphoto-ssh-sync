@@ -2,32 +2,49 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-if [ -e /etc/piphoto.conf ] ; then
-    source /etc/piphoto.conf
-else
-    >&2 echo "Could not read configuration file. Please update /etc/piphoto.conf"
-    exit 1
+function show_usage {
+    echo "Usage: $(basename "$0") [Options] directory"
+    echo "  -d host            The destination host to sync to"
+    echo "  -p path            The remote path"
+    echo "  -h                 Show this help"
+}
+
+if [ -e /etc/piphoto.ssh.conf ] ; then
+    source /etc/piphoto.ssh.conf
 fi
 
+while getopts "h?d:p:" opt; do
+    case "$opt" in
+    h|\?)
+        show_usage
+        exit 0
+        ;;
+    d)  dest_host="$OPTARG"
+        ;;
+    p)  dest_path="$OPTARG"
+        ;;
+    esac
+done
+
+shift $((OPTIND-1)); OPTIND=1
+
 if [ -z "${dest_host:-}" ]; then
-    >&2 echo "dest_host not set in config."
+    >&2 echo "dest_host not set. Use -d or set it in /etc/piphoto.ssh.conf"
     exit 1
 fi
 
 if [ -z "${dest_path:-}" ]; then
-    >&2 echo "dest_path not set in config."
+    >&2 echo "dest_path not set. Use -p or set it in /etc/piphoto.ssh.conf"
     exit 1
 fi
 
-if [ -z "${mount_point:-}" ]; then
-    >&2 echo "mount_point not set in config."
+mount_point=${1:-}
+if [ -z "$mount_point" ]; then
+    >&2 echo "ERROR: No directory provided!"
+    show_usage
     exit 1
 fi
 
-if [ -z "${remove_after_sync:-}" ]; then
-    echo "remove_after_sync is not set, defaulting to 0."
-    remove_after_sync=0
-fi
 
 # Ssh into the remote host in master mode
 ssh -nNfM "$dest_host"
@@ -59,17 +76,11 @@ while IFS= read -r -d '' file; do
             >&2 echo "Could not copy $file to $dest_host:$remote_path"
         else
             echo "Copied $file to $dest_host:$remote_path"
-            # remove the source file if asked.
-            if [ "$remove_after_sync" -eq 1 ] ; then rm -f "$file" ; fi
         fi
     
     fi
 
 done< <(find "$mount_point" -type f -print0)
-
-if [ "$remove_after_sync" -eq 1 ] ; then
-    sync
-fi
 
 # Terminate the ssh connection
 

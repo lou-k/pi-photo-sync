@@ -1,4 +1,4 @@
-# pi-photo-sync
+# PiPhoto Sync
 This project turns your raspberry pi into a photo uploader for your SD cards. It's pretty handy if your DSLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer.
 
 # Usage
@@ -19,28 +19,28 @@ Setup your pi, and then run
 sudo ./install.sh
 ```
 
+# Destinations
+
+You can customize PiPhoto to syncronize to different places by editing the `sync_command` (see below) that gets triggered when you insert your card.
+
+Detailed setup instructions are available for:
+* [ssh](src/destinations/ssh/README.md)
+* more to come soon.
+
 # Configuration
 
-## ssh
-First, set up ssh on your pi to authenticate with your server [using keys](https://www.tecmint.com/ssh-passwordless-login-using-ssh-keygen-in-5-easy-steps/).
+## piphoto.conf
 
-Next, update `~/.ssh/config` to make sshing into your server seamless. An example is in `./config/ssh` that looks like:
-
+Create a new configuration file:
 ```
-Host upstream
-    User MyRemoteUser
-    HostName 192.xxx
-    Port 22
-    ControlPath ~/.ssh/ctl-%h-%p-%r
+sudo cp config/piphoto.conf.example /etc/piphoto.conf
 ```
+and edit it with your favorite editor.
 
-`ControlPath` is currently required for this to work well.
-
-If everything is set up correctly, you should be able to
-
-```ssh upstream```
-
-and get to your remote host without a password.
+The variables that need to be set are:
+* **mount_point** - Where your sd card gets mounted (should match the point in the udev rules above.)
+* **run_as_user** - The user to run the sync program as.
+* **sync_command** - What command to run to sync the photos. (See _Destinations_ above).
 
 ## udev
 The udev rules are written to `/etc/udev/rules/99-mediastorage_card_instert_run.rules` during installation. 
@@ -52,20 +52,6 @@ If you wish to change the mount point, edit the rules file and then run:
 udevadm control --reload
 ```
 Note also you'll need to make the mount point correspond in `piphoto.conf`
-
-## piphoto.conf
-
-Next, create a new configuration file:
-```
-sudo cp config/piphoto.conf.example /etc/piphoto.conf
-```
-and edit it with your favorite editor.
-
-The variables that need to be set are:
-* **dest_host** - should match the `Host` in your `~/.ssh/config`
-* **dest_path** - the path on your remote machine to put the photos
-* **remove_after_sync** - if 1, the images are **DELETED** from your card after upload. _Use with caution_.
-* **mount_point** - Where your sd card gets mounted (should match the point in the udev rules above.)
 
 ## systemd service
 The install script creates the file `/etc/systemd/system/piphoto.service`. It instructs the system to run `phiphoto` when the sd card is mounted under the `pi` user.

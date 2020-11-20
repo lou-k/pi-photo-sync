@@ -1,18 +1,12 @@
 #!/bin/bash
-# piphoto-sync example configuration file
+# piphoto example configuration file
 # Fill this out and put it in /etc/piphoto.conf
-
-# The destination host for ssh. It should match an entry in your ~/.ssh/config file that has a `ControlPath` option set
-dest_host=upstream
-
-# The path on the remote machine to store the photos in
-dest_path=
-
-# If 1, the images are removed from the sd card after they are copied.
-remove_after_sync=0
 
 # Where the sd card is mounted (should match 99-mediastorage_card_instert_run.rules and systemd/piphoto.service)
 mount_point=/media
 
-# What user to run piphoto-sync as
+# What user to run the sync command as
 run_as_user=pi
+
+# What sync command to run
+sync_command="piphoto-ssh-sync $mount_point"

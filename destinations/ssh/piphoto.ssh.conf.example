@@ -1,0 +1,9 @@
+#!/bin/bash
+# piphoto-ssh-sync example configuration file
+# Fill this out and put it in /etc/piphoto.ssh.conf
+
+# The destination host for ssh. It should match an entry in your ~/.ssh/config file that has a `ControlPath` option set
+dest_host=upstream
+
+# The path on the remote machine to store the photos in
+dest_path=
