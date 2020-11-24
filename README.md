@@ -1,17 +1,36 @@
 # PiPhoto Sync
-This project turns your raspberry pi into a photo uploader for your SD cards. It's pretty handy if your DSLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer.
+
+PiPhoto Sync turns your raspberry pi into a photo uploader for your SD cards.
+
+It's pretty handy if your SLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer.
 
 # Usage
 
 Insert your sd card reader into the pi's usb port.
 
+The status LED's on the pi are used for status:
+
+![Image of Pi LEDs](assets/pi2.jpg)
+
 The green led will start flashing as it is processed.
 
 Once complete, the led's will indicate success of failure:
-* A solid green indicates the job was successful
-* A blinking red indicates the job failed
+* :green_circle: A solid green indicates the job was successful
+* :red_circle: A blinking red indicates the job failed
 
 When you remove the sd card, the leds return to usual pi indicators.
+
+# Destinations
+
+PiPhoto lets you customize how it synchronizes your photos.
+
+The `sync_command` (see below) in the config is the command that is executed when you insert your card. The simplest configuration just uses `rsync` to copy the files to a remote server.
+
+I've written some notes on other setups you may like:
+
+* [Copying and Organizing over SSH](destinations/ssh-copy-and-organize/README.md)
+* [Lightroom Classic on Mac OSX](destinations/osx-lightroom-classic/README.md)
+* more to come soon.
 
 # Installation
 Setup your pi, and then run
@@ -19,17 +38,7 @@ Setup your pi, and then run
 sudo ./install.sh
 ```
 
-# Destinations
-
-You can customize PiPhoto to syncronize to different places by editing the `sync_command` (see below) that gets triggered when you insert your card.
-
-Detailed setup instructions are available for:
-* [ssh](src/destinations/ssh/README.md)
-* more to come soon.
-
 # Configuration
-
-## piphoto.conf
 
 Create a new configuration file:
 ```
@@ -38,9 +47,11 @@ sudo cp config/piphoto.conf.example /etc/piphoto.conf
 and edit it with your favorite editor.
 
 The variables that need to be set are:
-* **mount_point** - Where your sd card gets mounted (should match the point in the udev rules above.)
+* **mount_point** - Where your sd card gets mounted (should match the point in the udev rules below.)
 * **run_as_user** - The user to run the sync program as.
 * **sync_command** - What command to run to sync the photos. (See _Destinations_ above).
+
+# Notes Under The Hood
 
 ## udev
 The udev rules are written to `/etc/udev/rules/99-mediastorage_card_instert_run.rules` during installation. 

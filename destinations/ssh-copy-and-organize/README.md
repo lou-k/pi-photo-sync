@@ -1,6 +1,21 @@
 # PiPhoto SSH Syncing
 
-Using this destination script will have your piphoto upload the images to a remote machine using ssh.
+The `piphoto-ssh-sync` script will upload your photos to a remote machine using ssh while simultaneously organizing them by date.
+
+On the remote host, the images are organized in directories named `YYYY/YYYY-MM-DD/` based on the exif data of the file. For example:
+```
+2020
+├── 2020-11-01
+│   ├── DSC_0536.NEF
+│   ├── DSC_0537.NEF
+│   ├── DSC_0538.NEF
+├── 2020-11-07
+│   ├── DSC_0001.NEF
+│   ├── DSC_0002.NEF
+│   ├── DSC_0003.NEF
+...
+```
+
 This script is installed by default when you install piphoto.
 
 You can also use this script as a stand alone program to copy-and-organize images at the same time.

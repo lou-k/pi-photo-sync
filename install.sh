@@ -5,7 +5,7 @@ IFS=$'\n\t'
 apt-get install -y exiftool at
 cp config/systemd/* /etc/systemd/system/
 cp src/* /usr/local/bin/
-cp destinations/ssh/piphoto-ssh-sync /usr/local/bin/
+cp destinations/ssh-copy-and-organize/piphoto-ssh-sync /usr/local/bin/
 cp config/udev/* /etc/udev/rules.d/
 udevadm control --reload
 systemctl daemon-reload

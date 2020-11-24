@@ -9,4 +9,4 @@ mount_point=/media
 run_as_user=pi
 
 # What sync command to run
-sync_command="piphoto-ssh-sync $mount_point"
+sync_command="rsync -rav -e shh $mount_point my_remote_server:./"
