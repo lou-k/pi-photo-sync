@@ -1,8 +1,11 @@
 # PiPhoto Sync
 
-PiPhoto Sync turns your raspberry pi into a photo uploader for your SD cards.
+PiPhoto Sync makes your raspberry pi automatically upload photos when you insert your SD cards.
 
-It's pretty handy if your SLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer.
+Here is a video demo of it uploading photos to OSX via ssh:
+[![Youtube Demo](https://img.youtube.com/vi/_iZTsNLnoRM/0.jpg)](https://www.youtube.com/watch?v=_iZTsNLnoRM)
+
+It's pretty handy if your SLR doesn't have wifi and you want to copy your photos to a server/the cloud without opening your computer. [This blog post](https://lou.dev/blog/2020/piphoto/) discusses it's core components.
 
 # Usage
 
