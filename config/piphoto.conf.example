@@ -2,7 +2,7 @@
 # piphoto example configuration file
 # Fill this out and put it in /etc/piphoto.conf
 
-# Where the sd card is mounted (should match 99-mediastorage_card_instert_run.rules and systemd/piphoto.service)
+# Where the sd card is mounted (should match 99-mediastorage_card_insert_run.rules and systemd/piphoto.service)
 mount_point=/media
 
 # What user to run the sync command as

@@ -57,7 +57,7 @@ The variables that need to be set are:
 # Notes Under The Hood
 
 ## udev
-The udev rules are written to `/etc/udev/rules/99-mediastorage_card_instert_run.rules` during installation. 
+The udev rules are written to `/etc/udev/rules/99-mediastorage_card_insert_run.rules` during installation. 
 
 They will configure your pi to mount usb devices to `/media` when inserted.
 
