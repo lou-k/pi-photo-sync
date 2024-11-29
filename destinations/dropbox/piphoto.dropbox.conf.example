@@ -1,0 +1,11 @@
+#!/bin/bash
+# piphoto-dropbox-sync example configuration file
+# Fill this out and put it in /etc/piphoto.dropbox.conf
+
+dropbox_uploader_sh=/path/to/dropbox_uploader.sh
+
+# The path to the dropbox uploader config file
+dropbox_uploader_config=$HOME/.dropbox_uploader
+
+# The path on the remote machine to store the photos in
+dest_path=/

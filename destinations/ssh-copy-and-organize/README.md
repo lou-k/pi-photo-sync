@@ -46,7 +46,7 @@ If everything is set up correctly, you should be able to
 and get to your remote host without a password.
 
 ## Configuration
-`piphoto-ssh-sync` reads from `/etc/piphoto.ssh.conf`. An example is provided in `piphoto.ssh.conf.example`. 
+`piphoto-ssh-sync` reads from `/etc/piphoto.ssh.conf`. An example is provided in `piphoto.ssh.conf.example`.
 
 The variables that need to be set are:
 * **dest_host** - should match the `Host` in your `~/.ssh/config`
@@ -60,7 +60,7 @@ piphoto-ssh-sync path_to_images
 to ensure it's working properly.
 
 ## Usage with piphoto
-Once `piphoto-ssh-sync`, you can use it with `pihoto` to sync images when your sd card is inserted.
+Once `piphoto-ssh-sync`, you can use it with `piphoto` to sync images when your sd card is inserted.
 Simply edit `/etc/piphoto.conf` and set:
 ```
 sync_command="piphoto-ssh-sync $mount_point"

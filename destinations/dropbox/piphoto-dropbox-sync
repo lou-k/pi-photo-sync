@@ -1,0 +1,88 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+function show_usage {
+    echo "Usage: $(basename "$0") [Options] directory"
+    echo "  -s dropbox_uploader.sh   The full path to dropbox_uploader.sh"
+    echo "  -c .dropbox_uploader     The full path to the .dropbox_uploader config
+    echo "  -p path                  The remote path to upload to"
+    echo "  -h                       Show this help"
+}
+
+if [ -e /etc/piphoto.ssh.conf ] ; then
+    source /etc/piphoto.dropbox.conf
+fi
+
+while getopts "h?d:p:" opt; do
+    case "$opt" in
+    h|\?)
+        show_usage
+        exit 0
+        ;;
+    s)  dropbox_uploader_sh="$OPTARG"
+        ;;
+    c)  dropbox_uploader_config="$OPTARG"
+        ;;
+    p)  dest_path="$OPTARG"
+        ;;
+    esac
+done
+
+shift $((OPTIND-1)); OPTIND=1
+
+if [ -z "${dropbox_uploader_sh:-}" ]; then
+    >&2 echo "dropbox_uploader_sh not set. Use -s or set it in /etc/piphoto.dropbox.conf"
+    exit 1
+fi
+
+if [ -z "${dropbox_uploader_config:-}" ]; then
+    >&2 echo "dropbox_uploader_config not set. Use -c or set it in /etc/piphoto.dropbox.conf"
+    exit 1
+fi
+
+if [ -z "${dest_path:-}" ]; then
+    >&2 echo "dest_path not set. Use -p or set it in /etc/piphoto.dropbox.conf"
+    exit 1
+fi
+
+mount_point=${1:-}
+if [ -z "$mount_point" ]; then
+    >&2 echo "ERROR: No directory provided!"
+    show_usage
+    exit 1
+fi
+
+
+# Iterate over the the images in the directory
+LAST_CREATED=""
+while IFS= read -r -d '' file; do
+    echo "Processing $file"
+
+    # Extract the date it was taken
+    date=$(exiftool -T -createdate -d  "%Y-%m-%d" "$file" || true)
+    year=$(date --date="$date" "+%Y" || true)
+    remote_path="$dest_path/$year/$date/"
+
+    if [ -z "$date" ] || [ -z "$year" ] || [ "$date" == "-" ] ; then
+        >&2 echo "Could not infer date from file \"$file\""
+    else
+        # Create a remote directory if we think we need to
+        if [ "$LAST_CREATED" != "$remote_path" ]; then
+            echo "Creating remote path $remote_path"
+            ${dropbox_uploader_sh} mkdir $remote_path" < /dev/null
+            LAST_CREATED="$remote_path"
+        fi
+
+        # Copy the file to the remote directory
+        copied=0
+        ${dropbox_uploader_sh} upload "$file" "$remote_path" || copied=$?
+        if [ "$copied" -ne 0 ] ; then
+            >&2 echo "Could not copy $file to Dropbox/$remote_path"
+        else
+            echo "Copied $file to Dropbox/$remote_path"
+        fi
+
+    fi
+
+done< <(find "$mount_point" -type f -print0)
