@@ -2,7 +2,7 @@
 
 This guide walks you through having your pi synchronize to a target folder in your Dropbox.
 
-[TODO] make the below actually work.  As of 2024-10-16, it is an OUTLINE of what needs to happen.
+[TODO] make the below actually work. As of 2024-11-29, it is an OUTLINE of what needs to happen but also has changes that might allow it to work.
 
 ## Install Dropbox Uploader
 
@@ -12,15 +12,15 @@ _Dropbox Uploader_ is a tool that can upload and download files to the Dropbox c
 
 The above URL will have the most up-to-date instructions for installation, but the basics are:
 
-1. Clone the git repository to a directory on your Raspberry Pi:
+1.  Clone the git repository to a directory on your Raspberry Pi:
 
         git clone https://github.com/andreafabrizi/Dropbox-Uploader.git
 
-2. Add execute permissions to the downloaded script:
+2.  Add execute permissions to the downloaded script:
 
         chmod +x Dropbox-Uploader/dropbox_uploader.sh
 
-3. Run the script and follow the directions to create an API key and connect your Dropbox:
+3.  Run the script and follow the directions to create an API key and connect your Dropbox:
 
         $ ./dropbox_uploader.sh
 
@@ -41,7 +41,7 @@ The above URL will have the most up-to-date instructions for installation, but t
 
         [... etc ...]
 
-    NOTE: If you do not follow the instructions to add permissions you will need to create a new Access Code after adding them.  Permissions do not apply retroactively.
+    NOTE: If you do not follow the instructions to add permissions you will need to create a new Access Code after adding them. Permissions do not apply retroactively.
 
     This step will create a file named `.dropbox-uploader` in your pi user's $HOME directory.
 
@@ -49,7 +49,7 @@ The above URL will have the most up-to-date instructions for installation, but t
 
 Finally, setup your PiPhoto to use `dropbox_uploader.sh` to copy the images to the Dropbox cloud. In your `piphoto.conf` file:
 
-``` console
+```console
 sync_command="$PATH_TO_DROPBOX_UPLOADER_SRC/dropbox_uploader.sh $mount_point /"
 ```
 
