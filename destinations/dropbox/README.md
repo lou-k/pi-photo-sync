@@ -6,7 +6,7 @@ This guide walks you through having your pi synchronize to a target folder in yo
 
 ## Install Dropbox Uploader
 
-_Dropbox Uploader_ is a tool that can upload and download files to the Dropbox cloud service.
+_Dropbox Uploader_ is a tool that can upload and download files to/from the Dropbox cloud service.
 
 <https://github.com/andreafabrizi/Dropbox-Uploader/>
 
@@ -53,6 +53,6 @@ Finally, setup your PiPhoto to use `dropbox_uploader.sh` to copy the images to t
 
 ## Caveats
 
-Note that this setup assumes that your camera names the images continuously. If it restarts at 1 each time you erase your card, then the `dropbox_uploader.sh` command will overwrite images in your web cloud.
+Note that this setup assumes that your camera names the images continuously. If it restarts at "1" each time the card is erased, then the `dropbox_uploader.sh` command will overwrite images in your Dropbox.
 
-If you want the remote folder to organize images by date, check out the [Copying and Organizing over SSH](../ssh-copy-and-organize/README.md) setup.
+This should organize images in the remote folder by date gathered from the images' EXIF metadata, similar to the [Copying and Organizing over SSH](../ssh-copy-and-organize/README.md) setup.
