@@ -4,8 +4,8 @@ IFS=$'\n\t'
 
 function show_usage {
     echo "Usage: $(basename "$0") [Options] directory"
-    echo "  -s dropbox_uploader.sh   The full path to dropbox_uploader.sh"
-    echo "  -c .dropbox_uploader     The full path to the .dropbox_uploader config"
+    echo "  -s SCRIPT   The full path to dropbox_uploader.sh"
+    echo "  -c CONFIG     The full path to the .dropbox_uploader config"
     echo "  -p path                  The remote path to upload to"
     echo "  -h                       Show this help"
 }
