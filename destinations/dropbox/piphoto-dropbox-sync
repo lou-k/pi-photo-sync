@@ -70,13 +70,13 @@ while IFS= read -r -d '' file; do
         # Create a remote directory if we think we need to
         if [ "$LAST_CREATED" != "$remote_path" ]; then
             echo "Creating remote path $remote_path"
-            ${dropbox_uploader_sh} mkdir $remote_path" < /dev/null
+            ${dropbox_uploader_sh} -f ${dropbox_uploader_config} mkdir $remote_path" < /dev/null
             LAST_CREATED="$remote_path"
         fi
 
         # Copy the file to the remote directory
         copied=0
-        ${dropbox_uploader_sh} upload "$file" "$remote_path" || copied=$?
+        ${dropbox_uploader_sh} -f ${dropbox_uploader_config} upload "$file" "$remote_path" || copied=$?
         if [ "$copied" -ne 0 ] ; then
             >&2 echo "Could not copy $file to Dropbox/$remote_path"
         else
