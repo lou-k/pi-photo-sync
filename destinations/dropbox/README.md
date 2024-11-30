@@ -57,7 +57,7 @@ The above URL will have the most up-to-date instructions for installation, but t
 Finally, setup your PiPhoto to use `dropbox_uploader.sh` to copy the images to the Dropbox cloud. In your `piphoto.conf` file:
 
 ``` shell
-sync_command="$PATH_TO_DROPBOX_UPLOADER_SRC/dropbox_uploader.sh"
+sync_command="piphoto-dropbox-sync"
 ```
 
 ## Caveats

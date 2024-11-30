@@ -39,9 +39,11 @@ Here are other setups you may like:
 
 ## Installation
 
-Setup your pi, and then run
+Setup your pi, and then run:
 
 ```shell
+git clone ${URL_FOR_THIS_REPO}
+cd pi-photo-sync
 sudo ./install.sh
 ```
 
