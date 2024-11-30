@@ -2,6 +2,14 @@
 set -uo pipefail
 IFS=$'\n\t'
 
+if [ -e /sys/devices/platform/leds/leds/PWR ]; then
+    RED_LED=/sys/devices/platform/leds/leds/PWR
+    GREEN_LED=/sys/devices/platform/leds/leds/ACT
+else
+    RED_LED=/sys/devices/platform/leds/leds/led1
+    GREEN_LED=/sys/devices/platform/leds/leds/led0
+fi
+
 if [ -e /etc/piphoto.conf ] ; then
     source /etc/piphoto.conf
 else
@@ -12,20 +20,20 @@ fi
 # led 0 - green, led 1 - red
 function indicate_error {
     # Turn off the green led and flash the red indicating an error
-    echo 'none' | sudo tee /sys/class/leds/led0/trigger > /dev/null
-    echo 0 | sudo tee /sys/class/leds/led0/brightness > /dev/null
-    echo timer | sudo tee /sys/class/leds/led1/trigger > /dev/null
+    echo 'none' | sudo tee ${GREEN_LED}/trigger > /dev/null
+    echo 0 | sudo tee ${GREEN_LED}/brightness > /dev/null
+    echo timer | sudo tee ${RED_LED}/trigger > /dev/null
     >&2 echo "Sync command exited with non-zero status!"
 }
 
 function indicate_success {
     # Set the green led to solid to indicate success
-    echo 'default-on' | sudo tee /sys/class/leds/led0/trigger > /dev/null
+    echo 'default-on' | sudo tee ${GREEN_LED}/trigger > /dev/null
     echo "Sync completed successfully"
 }
 
 # Start blinking the green led
-echo timer | sudo tee /sys/class/leds/led0/trigger > /dev/null
+echo timer | sudo tee ${GREEN_LED}/trigger > /dev/null
 
 # Indicate error status if the script is interrupted
 function interrupted {

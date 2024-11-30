@@ -2,6 +2,14 @@
 set -uo pipefail
 IFS=$'\n\t'
 
+if [ -e /sys/devices/platform/leds/leds/PWR ]; then
+    RED_LED=/sys/devices/platform/leds/leds/PWR
+    GREEN_LED=/sys/devices/platform/leds/leds/ACT
+else
+    RED_LED=/sys/devices/platform/leds/leds/led1
+    GREEN_LED=/sys/devices/platform/leds/leds/led0
+fi
+
 # Reset the leds to their defaults
-echo mmc0 > /sys/class/leds/led0/trigger
-echo input > /sys/class/leds/led1/trigger
+echo mmc0 > ${GREEN_LED}/trigger
+echo input > ${RED_LED}/trigger
