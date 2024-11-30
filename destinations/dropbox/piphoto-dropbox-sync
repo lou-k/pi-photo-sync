@@ -70,7 +70,7 @@ while IFS= read -r -d '' file; do
         # Create a remote directory if we think we need to
         if [ "$LAST_CREATED" != "$remote_path" ]; then
             echo "Creating remote path $remote_path"
-            ${dropbox_uploader_sh} -f ${dropbox_uploader_config} mkdir $remote_path" < /dev/null
+            ${dropbox_uploader_sh} -f ${dropbox_uploader_config} mkdir "$remote_path" < /dev/null
             LAST_CREATED="$remote_path"
         fi
 
