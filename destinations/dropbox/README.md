@@ -52,9 +52,41 @@ The above URL will have the most up-to-date instructions for installation, but t
 
     This step will create a file named `.dropbox-uploader` in your pi user's $HOME directory.
 
+## Test Dropbox Uploader
+
+Test the dropbox_uploader.sh by running the following:
+
+``` shell
+./dropbox_uploader.sh upload some_file /
+```
+
+## Configuration
+
+`piphoto-dropbox-sync` reads from `/etc/piphoto.dropbox.conf`. An example config is provided in `piphoto.dropbox.conf.example`.
+
+The variables that need to be set are:
+
+- **`dropbox_uploader_sh`** - The full path to the dropbox_uploader.sh
+
+- **`dropbox_uploader_config`** - The path to the `.dropbox-uploader` config file
+
+- **`dest_path`** - The path in the Dropbox App to put the photos.
+
+    Note: Dropbox Apps can be set up to have full access to the Dropbox folder, or only to an application-specific directory.  If full access, `/` refers to the top level of the Dropbox directory e.g. `$USER/Dropbox/`.  If it's application-specific, `/` refers to a directory for the app in the Dropbox/Apps directory, e.g.  `$HOME/Dropbox/Apps/name-of-your-app/`
+
+## Testing photo sync
+
+Once `piphoto-dropbox-sync` is configured, it may be tested by running the following:
+
+``` shell
+piphoto-dropbox-sync /path/to/images
+```
+
+to ensure it's working properly.
+
 ## Setting up PiPhoto
 
-Finally, setup your PiPhoto to use `dropbox_uploader.sh` to copy the images to the Dropbox cloud. In your `piphoto.conf` file:
+Finally, setup your PiPhoto to use `piphoto-dropbox-sync` to copy the images to the Dropbox cloud. In your `piphoto.conf` file:
 
 ``` shell
 sync_command="piphoto-dropbox-sync"

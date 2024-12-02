@@ -3,11 +3,12 @@ set -euo pipefail
 IFS=$'\n\t'
 
 function show_usage {
-    echo "Usage: $(basename "$0") [Options] directory"
+    echo "Usage: $(basename "$0") [Options] DIRECTORY"
     echo "  -s SCRIPT   The full path to dropbox_uploader.sh"
-    echo "  -c CONFIG     The full path to the .dropbox_uploader config"
-    echo "  -p path                  The remote path to upload to"
-    echo "  -h                       Show this help"
+    echo "  -c CONFIG   The full path to the .dropbox_uploader config"
+    echo "  -p PATH     The remote path to upload to"
+    echo "  -h          Show this help"
+    echo "  DIRECTORY   The directory to scan for files to upload"
 }
 
 if [ -e /etc/piphoto.ssh.conf ] ; then
