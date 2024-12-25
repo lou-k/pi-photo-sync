@@ -1,8 +1,30 @@
 # Synchronizing to Dropbox
 
-This guide walks you through having your pi synchronize to a target folder in your Dropbox.
+This guide walks you through having your photos uploaded to Dropbox.
+
+The `piphoto-dropbox-sync` will upload the photos using the Dropbox Uploader tool connected to a Dropbox App key .
+
+In the Dropbox, the images are organized in directories named `YYYY/YYYY-MM-DD/` based on the exif data of the file. For example:
+
+``` text
+2024
+├── 2024-11-01
+│   ├── DSC_1536.NEF
+│   ├── DSC_1537.NEF
+│   └── DSC_1538.NEF
+├── 2024-11-07
+│   ├── DSC_1001.NEF
+│   ├── DSC_1002.NEF
+│   └── DSC_1003.NEF
+...
+```
+This script is installed by default when you install `piphoto`.
 
 [TODO] make the below actually work. As of 2024-11-29, it is an OUTLINE of what needs to happen but also has changes that might allow it to work.
+
+## Usage
+
+The `piphoto-dropbox-sync` will read options from `/etc/piphoto.dropbox.conf` or the command line (see `piphoto-dropbox-sync -h` for options).
 
 ## Install Dropbox Uploader
 
@@ -24,7 +46,7 @@ The above URL will have the most up-to-date instructions for installation, but t
     chmod +x Dropbox-Uploader/dropbox_uploader.sh
     ```
 
-3. Run the script and follow the directions to create an API key and connect your Dropbox:
+3. Run the script and follow the directions to create an App, an API key, and connect your Dropbox:
 
     ``` shell
     $ ./dropbox_uploader.sh
@@ -36,7 +58,7 @@ The above URL will have the most up-to-date instructions for installation, but t
 
     1) Open the following URL in your Browser, and log in using your account: https://www.dropbox.com/developers/apps
     2) Click on "Create App", then select "Choose an API: Scoped Access"
-    3) "Choose the type of access you need: App folder"
+    3) Choose the type of access you need: App folder
     4) Enter the "App Name" that you prefer (e.g. MyUploader23592122016593), must be unique
 
     Now, click on the "Create App" button.
@@ -62,7 +84,7 @@ Test the dropbox_uploader.sh by running the following:
 
 ## Configuration
 
-`piphoto-dropbox-sync` reads from `/etc/piphoto.dropbox.conf`. An example config is provided in `piphoto.dropbox.conf.example`.
+The `piphoto-dropbox-sync` script reads from `/etc/piphoto.dropbox.conf`. An example config is provided in `piphoto.dropbox.conf.example`.
 
 The variables that need to be set are:
 
@@ -72,11 +94,14 @@ The variables that need to be set are:
 
 - **`dest_path`** - The path in the Dropbox App to put the photos.
 
-    Note: Dropbox Apps can be set up to have full access to the Dropbox folder, or only to an application-specific directory.  If full access, `/` refers to the top level of the Dropbox directory e.g. `$USER/Dropbox/`.  If it's application-specific, `/` refers to a directory for the app in the Dropbox/Apps directory, e.g.  `$HOME/Dropbox/Apps/name-of-your-app/`
+  Note: Dropbox Apps can be set up to have full access to the Dropbox folder, or only to an application-specific directory.  This is configured when the app is created at the Dropbox Developers page.
+
+  - If "Full Dropbox", the `/` refers to the top level of the Dropbox directory, i.e. something like  `$USER/Dropbox/`
+  - If "App folder", the `/` refers to a directory for the app in the Dropbox/Apps directory, e.g.  `$HOME/Dropbox/Apps/name-of-the-app/`
 
 ## Testing photo sync
 
-Once `piphoto-dropbox-sync` is configured, it may be tested by running the following:
+Once `piphoto-dropbox-sync` is configured, it should be tested by running the following:
 
 ``` shell
 piphoto-dropbox-sync /path/to/images
@@ -93,7 +118,5 @@ sync_command="piphoto-dropbox-sync"
 ```
 
 ## Caveats
-
-Note that this setup assumes that your camera names the images continuously. If it restarts at "1" each time the card is erased, then the `dropbox_uploader.sh` command will overwrite images in your Dropbox.
 
 This should organize images in the remote folder by date gathered from the images' EXIF metadata, similar to the [Copying and Organizing over SSH](../ssh-copy-and-organize/README.md) setup.
