@@ -11,7 +11,7 @@ function show_usage {
     echo "  DIRECTORY   The directory to scan for files to upload"
 }
 
-if [ -e /etc/piphoto.ssh.conf ] ; then
+if [ -e /etc/piphoto.dropbox.conf ] ; then
     source /etc/piphoto.dropbox.conf
 fi
 
