@@ -16,7 +16,7 @@ if [ -e /etc/piphoto.dropbox.conf ] ; then
     source /etc/piphoto.dropbox.conf
 fi
 
-while getopts "h?d:p:" opt; do
+while getopts "h?ds:c:p:" opt; do
     case "$opt" in
     h|\?)
         show_usage
