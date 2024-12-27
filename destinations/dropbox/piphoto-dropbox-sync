@@ -74,7 +74,7 @@ while IFS= read -r -d '' file; do
     # Extract the date it was taken
     date=$(exiftool -T -createdate -d  "%Y-%m-%d" "$file" || true)
     year=$(date --date="$date" "+%Y" || true)
-    remote_path="$dest_path/$year/$date/"
+    remote_path="$dest_path/$year/$date"
 
     if [ -z "$date" ] || [ -z "$year" ] || [ "$date" == "-" ] ; then
         >&2 echo "Could not infer date from file \"$file\""
