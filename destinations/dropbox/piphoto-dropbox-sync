@@ -7,6 +7,7 @@ function show_usage {
     echo "  -s SCRIPT   The full path to dropbox_uploader.sh"
     echo "  -c CONFIG   The full path to the .dropbox_uploader config"
     echo "  -p PATH     The remote path to upload to"
+    echo "  -d          Debug output"
     echo "  -h          Show this help"
     echo "  DIRECTORY   The directory to scan for files to upload"
 }
@@ -20,6 +21,9 @@ while getopts "h?d:p:" opt; do
     h|\?)
         show_usage
         exit 0
+        ;;
+    d)
+        DEBUG=yes
         ;;
     s)  dropbox_uploader_sh="$OPTARG"
         ;;
@@ -45,6 +49,12 @@ fi
 if [ -z "${dest_path:-}" ]; then
     >&2 echo "dest_path not set. Use -p or set it in /etc/piphoto.dropbox.conf"
     exit 1
+fi
+
+if [ "$DEBUG" == "yes" ]; then
+    echo "Enabling debug output"
+    dropbox_uploader_sh="${dropbox_uploader_sh} -d"
+    set -x
 fi
 
 mount_point=${1:-}
