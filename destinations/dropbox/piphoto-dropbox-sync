@@ -2,6 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+DEBUG=""
+
 function show_usage {
     echo "Usage: $(basename "$0") [Options] DIRECTORY"
     echo "  -s SCRIPT   The full path to dropbox_uploader.sh"
@@ -18,10 +20,6 @@ fi
 
 while getopts "h?ds:c:p:" opt; do
     case "$opt" in
-    h|\?)
-        show_usage
-        exit 0
-        ;;
     d)
         DEBUG=yes
         ;;
@@ -30,6 +28,10 @@ while getopts "h?ds:c:p:" opt; do
     c)  dropbox_uploader_config="$OPTARG"
         ;;
     p)  dest_path="$OPTARG"
+        ;;
+    h | \?)
+        show_usage
+        exit 0
         ;;
     esac
 done
@@ -52,6 +54,7 @@ if [ -z "${dest_path:-}" ]; then
 fi
 
 dropbox_uploader_debug=""
+
 if [ "$DEBUG" == "yes" ]; then
     echo "Enabling debug output"
     dropbox_uploader_debug="-d"
