@@ -9,6 +9,11 @@ dropbox_uploader_sh=dropbox_uploader.sh
 # The full path to the dropbox uploader config file
 dropbox_uploader_config=$HOME/.dropbox_uploader
 
+# Dropbox Uploader options.
+
+dropbox_uploader_options="-s"
+
+
 # The path in Dropbox to store the photos in.
 # This relative to how the Dropbox App key is set up.
 # See the note in the README for more details.
