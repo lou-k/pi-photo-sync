@@ -18,9 +18,8 @@ In the Dropbox, the images are organized in directories named `YYYY/YYYY-MM-DD/`
 │   └── DSC_1003.NEF
 ...
 ```
-This script is installed by default when you install `piphoto`.
 
-[TODO] make the below actually work. As of 2024-11-29, it is an OUTLINE of what needs to happen but also has changes that might allow it to work.
+This script is installed by default when you install `piphoto`, but to use it, you will need to install [Dropbox Uploader](https://github.com/andreafabrizi/Dropbox-Uploader/) as described below
 
 ## Usage
 
@@ -74,12 +73,18 @@ The above URL will have the most up-to-date instructions for installation, but t
 
     This step will create a file named `.dropbox-uploader` in your pi user's $HOME directory.
 
+    Optional:  Copy the `dropbox_uploader.sh` into `/usr/local/bin` on the pi.
+
+    ``` shell
+    sudo cp -v dropbox_uploader.sh /usr/local/bin
+    ```
+
 ## Test Dropbox Uploader
 
 Test the dropbox_uploader.sh by running the following:
 
 ``` shell
-./dropbox_uploader.sh upload some_file /
+dropbox_uploader.sh upload some_file /
 ```
 
 ## Configuration
@@ -88,7 +93,7 @@ The `piphoto-dropbox-sync` script reads from `/etc/piphoto.dropbox.conf`. An exa
 
 The variables that need to be set are:
 
-- **`dropbox_uploader_sh`** - The full path to the dropbox_uploader.sh
+- **`dropbox_uploader_sh`** - If the script is not on the user's PATH, this needs to be the full path to the dropbox_uploader.sh
 
 - **`dropbox_uploader_config`** - The path to the `.dropbox-uploader` config file
 
@@ -99,7 +104,7 @@ The variables that need to be set are:
   - If "Full Dropbox", the `/` refers to the top level of the Dropbox directory, i.e. something like  `$USER/Dropbox/`
   - If "App folder", the `/` refers to a directory for the app in the Dropbox/Apps directory, e.g.  `$HOME/Dropbox/Apps/name-of-the-app/`
 
-## Testing photo sync
+## Testing photo sync to Dropbox
 
 Once `piphoto-dropbox-sync` is configured, it should be tested by running the following:
 
@@ -119,4 +124,4 @@ sync_command="piphoto-dropbox-sync"
 
 ## Caveats
 
-This should organize images in the remote folder by date gathered from the images' EXIF metadata, similar to the [Copying and Organizing over SSH](../ssh-copy-and-organize/README.md) setup.
+This should organize images in the remote folder by capture date gathered from the images' EXIF metadata, similar to the [Copying and Organizing over SSH](../ssh-copy-and-organize/README.md) setup.

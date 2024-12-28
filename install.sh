@@ -20,6 +20,6 @@ systemctl enable piphoto.service
 
 set +x
 echo "piphoto executables and udev rules installed."
-echo " - Create /etc/piphoto.conf if it doesn't exist..."
-echo " - If using Dropbox destination, follow instructions in that README"
-echo "   to install the dropbox_uploader script"
+echo " - Create /etc/piphoto.conf if it doesn't exist."
+echo " - If using Dropbox destination, follow instructions in that README.md"
+echo "   to install the dropbox_uploader.sh script and set it up."

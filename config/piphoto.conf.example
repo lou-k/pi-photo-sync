@@ -9,4 +9,9 @@ mount_point=/media
 run_as_user=pi
 
 # What sync command to run
+# rsync:
 sync_command="rsync -rav -e shh $mount_point my_remote_server:./"
+# dropbox upload:
+# sync_command="piphoto-dropbox-sync $mount_point"
+# dropbox upload and delete local
+# sync_command="piphoto-dropbox-sync -r $mount_point"
