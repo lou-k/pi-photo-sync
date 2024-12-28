@@ -75,8 +75,6 @@ if [ -z "${mount_point}" ]; then
     exit 1
 fi
 
-uploaded=0
-
 # Iterate over the the images in the directory
 LAST_CREATED=""
 while IFS= read -r -d '' file; do
@@ -104,7 +102,6 @@ while IFS= read -r -d '' file; do
             >&2 echo "Could not copy $file to Dropbox${remote_path}"
         else
             echo "Copied $file to Dropbox${remote_path}"
-            let uploaded++
 
             if [ "${RM_AFTER_SYNC}" == "yes" ]; then
                 echo "Removing local file from card..."
@@ -120,5 +117,3 @@ done< <(find "$mount_point" -type d \( \
         -o -name ".fseventsd" \
         \) \
         -prune -o -type f -print0)
-
->&2 echo "Uploaded $uploaded images to Dropbox"
