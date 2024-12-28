@@ -17,23 +17,22 @@ else
     exit 1
 fi
 
-# led 0 - green, led 1 - red
 function indicate_error {
     # Turn off the green led and flash the red indicating an error
-    echo 'none' | sudo tee ${GREEN_LED}/trigger > /dev/null
-    echo 0 | sudo tee ${GREEN_LED}/brightness > /dev/null
-    echo timer | sudo tee ${RED_LED}/trigger > /dev/null
+    sudo sh -c "echo 'none' > ${GREEN_LED}/trigger"
+    sudo sh -c "echo 0 > ${GREEN_LED}/brightness"
+    sudo sh -c "echo 'timer' > ${RED_LED}/trigger"
     >&2 echo "Sync command exited with non-zero status!"
 }
 
 function indicate_success {
     # Set the green led to solid to indicate success
-    echo 'default-on' | sudo tee ${GREEN_LED}/trigger > /dev/null
+    sudo sh -c "echo 'default-on' > ${GREEN_LED}/trigger"
     echo "Sync completed successfully"
 }
 
 # Start blinking the green led
-echo timer | sudo tee ${GREEN_LED}/trigger > /dev/null
+sudo sh -c "echo timer > ${GREEN_LED}/trigger"
 
 # Indicate error status if the script is interrupted
 function interrupted {
