@@ -23,11 +23,11 @@ while getopts "h?ds:c:p:" opt; do
     d)
         DEBUG=yes
         ;;
-    s)  dropbox_uploader_sh="$OPTARG"
+    s)  dropbox_uploader_sh="${OPTARG}"
         ;;
-    c)  dropbox_uploader_config="$OPTARG"
+    c)  dropbox_uploader_config="${OPTARG}"
         ;;
-    p)  dest_path="$OPTARG"
+    p)  dest_path="${OPTARG}"
         ;;
     h | \?)
         show_usage
@@ -55,14 +55,14 @@ fi
 
 dropbox_uploader_debug=""
 
-if [ "$DEBUG" == "yes" ]; then
+if [ "${DEBUG}" == "yes" ]; then
     echo "Enabling debug output"
     dropbox_uploader_debug="-d"
     set -x
 fi
 
 mount_point=${1:-}
-if [ -z "$mount_point" ]; then
+if [ -z "${mount_point}" ]; then
     >&2 echo "ERROR: No directory provided!"
     show_usage
     exit 1
@@ -75,29 +75,31 @@ while IFS= read -r -d '' file; do
     echo "Processing $file"
 
     # Extract the date it was taken
-    date=$(exiftool -T -createdate -d  "%Y-%m-%d" "$file" || true)
-    year=$(date --date="$date" "+%Y" || true)
-    remote_path="$dest_path/$year/$date"
+    date=$(exiftool -T -createdate -d  "%Y-%m-%d" "${file}" || true)
+    year=$(date --date="${date}" "+%Y" || true)
+    remote_path="${dest_path}/${year}/${date}"
 
     if [ -z "$date" ] || [ -z "$year" ] || [ "$date" == "-" ] ; then
-        >&2 echo "Could not infer date from file \"$file\""
+        >&2 echo "Could not infer date from file \"${file}\""
     else
         # Create a remote directory if we think we need to
         if [ "$LAST_CREATED" != "$remote_path" ]; then
             echo "Creating remote path $remote_path"
             ${dropbox_uploader_sh} ${dropbox_uploader_debug} -f ${dropbox_uploader_config} mkdir "$remote_path" < /dev/null
-            LAST_CREATED="$remote_path"
+            LAST_CREATED="${remote_path}"
         fi
 
         # Copy the file to the remote directory
         copied=0
         ${dropbox_uploader_sh} ${dropbox_uploader_debug} -f ${dropbox_uploader_config} upload "$file" "$remote_path" || copied=$?
         if [ "$copied" -ne 0 ] ; then
-            >&2 echo "Could not copy $file to Dropbox/$remote_path"
+            >&2 echo "Could not copy $file to Dropbox${remote_path}"
         else
-            echo "Copied $file to Dropbox/$remote_path"
+            echo "Copied $file to Dropbox${remote_path}"
         fi
 
     fi
 
-done< <(find "$mount_point" -type f -print0)
+done< <(find "$mount_point" -type d -name ".Trashes" -prune -o -type f -print0)
+
+# find /path/to/search -type d \( -name ".Trashes" \) -prune -o -type f -print
