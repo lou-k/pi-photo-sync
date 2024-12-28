@@ -19,5 +19,7 @@ systemctl daemon-reload
 systemctl enable piphoto.service
 
 set +x
-echo "Executables and udev rules installed."
-echo "    You'll need to create /etc/piphoto.conf if you haven't already"
+echo "piphoto executables and udev rules installed."
+echo " - Create /etc/piphoto.conf if it doesn't exist..."
+echo " - If using Dropbox destination, follow instructions in that README"
+echo "   to install the dropbox_uploader script"
