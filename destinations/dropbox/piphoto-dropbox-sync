@@ -103,7 +103,7 @@ while IFS= read -r -d '' file; do
             echo "Copied $file to Dropbox${remote_path}"
             if [ "${RM_AFTER_SYNC}" == "yes" ]; then
                 echo "Removing local file from card..."
-                rm -v "${file}"
+                sudo rm -v "${file}"
             fi
         fi
 
