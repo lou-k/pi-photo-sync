@@ -3,12 +3,14 @@ set -euo pipefail
 IFS=$'\n\t'
 
 DEBUG=""
+RM_AFTER_SYNC=""
 
 function show_usage {
     echo "Usage: $(basename "$0") [Options] DIRECTORY"
     echo "  -s SCRIPT   The full path to dropbox_uploader.sh"
     echo "  -c CONFIG   The full path to the .dropbox_uploader config"
     echo "  -p PATH     The remote path to upload to"
+    echo "  -r          Remove file after successful upload"
     echo "  -d          Debug output"
     echo "  -h          Show this help"
     echo "  DIRECTORY   The directory to scan for files to upload"
@@ -18,10 +20,13 @@ if [ -e /etc/piphoto.dropbox.conf ] ; then
     source /etc/piphoto.dropbox.conf
 fi
 
-while getopts "h?ds:c:p:" opt; do
+while getopts "h?drs:c:p:" opt; do
     case "$opt" in
     d)
         DEBUG=yes
+        ;;
+    r)
+        RM_AFTER_SYNC=yes
         ;;
     s)  dropbox_uploader_sh="${OPTARG}"
         ;;
@@ -96,6 +101,10 @@ while IFS= read -r -d '' file; do
             >&2 echo "Could not copy $file to Dropbox${remote_path}"
         else
             echo "Copied $file to Dropbox${remote_path}"
+            if [ "${RM_AFTER_SYNC}" == "yes" ]; then
+                echo "Removing local file from card..."
+                rm -v "${file}"
+            fi
         fi
 
     fi
