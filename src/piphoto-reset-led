@@ -11,5 +11,5 @@ else
 fi
 
 # Reset the leds to their defaults
-echo mmc0 > ${GREEN_LED}/trigger
-echo input > ${RED_LED}/trigger
+sudo sh -c "echo mmc0 > ${GREEN_LED}/trigger"
+sudo sh -c "echo input > ${RED_LED}/trigger"
