@@ -1,0 +1,119 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+DEBUG=""
+RM_AFTER_SYNC=""
+
+function show_usage {
+    echo "Usage: $(basename "$0") [Options] DIRECTORY"
+    echo "  -s SCRIPT   The full path to dropbox_uploader.sh"
+    echo "  -c CONFIG   The full path to the .dropbox_uploader config"
+    echo "  -p PATH     The remote path to upload to"
+    echo "  -r          Remove file after successful upload"
+    echo "  -d          Debug output"
+    echo "  -h          Show this help"
+    echo "  DIRECTORY   The directory to scan for files to upload"
+}
+
+dropbox_uploader_options=""
+
+if [ -e /etc/piphoto.dropbox.conf ] ; then
+    source /etc/piphoto.dropbox.conf
+fi
+
+while getopts "h?drs:c:p:" opt; do
+    case "$opt" in
+    d)
+        DEBUG=yes
+        ;;
+    r)
+        RM_AFTER_SYNC=yes
+        ;;
+    s)  dropbox_uploader_sh="${OPTARG}"
+        ;;
+    c)  dropbox_uploader_config="${OPTARG}"
+        ;;
+    p)  dest_path="${OPTARG}"
+        ;;
+    h | \?)
+        show_usage
+        exit 0
+        ;;
+    esac
+done
+
+shift $((OPTIND-1)); OPTIND=1
+
+if [ -z "${dropbox_uploader_sh:-}" ]; then
+    >&2 echo "dropbox_uploader_sh not set. Use -s or set it in /etc/piphoto.dropbox.conf"
+    exit 1
+fi
+
+if [ -z "${dropbox_uploader_config:-}" ]; then
+    >&2 echo "dropbox_uploader_config not set. Use -c or set it in /etc/piphoto.dropbox.conf"
+    exit 1
+fi
+
+if [ -z "${dest_path:-}" ]; then
+    >&2 echo "dest_path not set. Use -p or set it in /etc/piphoto.dropbox.conf"
+    exit 1
+fi
+
+dropbox_uploader_debug=""
+
+if [ "${DEBUG}" == "yes" ]; then
+    echo "Enabling debug output"
+    dropbox_uploader_debug="-d"
+    set -x
+fi
+
+mount_point=${1:-}
+if [ -z "${mount_point}" ]; then
+    >&2 echo "ERROR: No directory provided!"
+    show_usage
+    exit 1
+fi
+
+# Iterate over the the images in the directory
+LAST_CREATED=""
+while IFS= read -r -d '' file; do
+    echo "Processing $file"
+
+    # Extract the date it was taken
+    date=$(exiftool -T -createdate -d  "%Y-%m-%d" "${file}" || true)
+    year=$(date --date="${date}" "+%Y" || true)
+    remote_path="${dest_path}/${year}/${date}"
+
+    if [ -z "$date" ] || [ -z "$year" ] || [ "$date" == "-" ] ; then
+        >&2 echo "Could not infer date from file \"${file}\""
+    else
+        # Create a remote directory if we think we need to
+        if [ "$LAST_CREATED" != "$remote_path" ]; then
+            echo "Creating remote path $remote_path"
+            ${dropbox_uploader_sh} ${dropbox_uploader_debug} -f ${dropbox_uploader_config} mkdir "$remote_path" < /dev/null
+            LAST_CREATED="${remote_path}"
+        fi
+
+        # Copy the file to the remote directory
+        copied=0
+        ${dropbox_uploader_sh} ${dropbox_uploader_debug} -f ${dropbox_uploader_config} ${dropbox_uploader_options} upload "$file" "$remote_path" || copied=$?
+        if [ "$copied" -ne 0 ] ; then
+            >&2 echo "Could not copy $file to Dropbox${remote_path}"
+        else
+            echo "Copied $file to Dropbox${remote_path}"
+
+            if [ "${RM_AFTER_SYNC}" == "yes" ]; then
+                echo "Removing local file from card..."
+                sudo rm -v "${file}"
+            fi
+        fi
+
+    fi
+
+done< <(find "$mount_point" -type d \( \
+        -name ".Trashes" \
+        -o -name ".Spotlight-V100" \
+        -o -name ".fseventsd" \
+        \) \
+        -prune -o -type f -print0)

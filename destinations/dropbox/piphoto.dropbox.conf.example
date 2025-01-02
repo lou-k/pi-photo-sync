@@ -1,0 +1,20 @@
+#!/bin/bash
+# piphoto-dropbox-sync example configuration file
+# Fill this out and put it in /etc/piphoto.dropbox.conf
+
+# The dropbox_uploader.sh script.
+# If the script is not on the user's PATH, it must be the full path.
+dropbox_uploader_sh=dropbox_uploader.sh
+
+# The full path to the dropbox uploader config file
+dropbox_uploader_config=$HOME/.dropbox_uploader
+
+# Dropbox Uploader options.
+
+dropbox_uploader_options="-s"
+
+
+# The path in Dropbox to store the photos in.
+# This relative to how the Dropbox App key is set up.
+# See the note in the README for more details.
+dest_path=/
